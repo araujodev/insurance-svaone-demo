@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Insurance SVA ONE - DEMO</title>
+    <style>
+        pre {
+            white-space: pre-wrap;       /* Since CSS 2.1 */
+            white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+            white-space: -pre-wrap;      /* Opera 4-6 */
+            white-space: -o-pre-wrap;    /* Opera 7 */
+            word-wrap: break-word;       /* Internet Explorer 5.5+ */
+            background: #f8f9fa;
+            border-radius: 5px;
+            border: 1px solid #d7d7d7;
+            border-left: 4px solid #999999;
+            padding: 12px;
+            box-shadow: 3px 3px 4px #e5e5e5;
+        }
+    </style>
+</head>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
+<body>
+    <div class="container">
+        <nav class="navbar navbar-expand-lg bg-light">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="index.html">Demo Integrator</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="buscar-cep.html">Buscar CEP</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Clientes
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="listar-clientes.html">Listar Clientes</a></li>
+                            <li><a class="dropdown-item" href="criar-cliente.html">Criar Cliente</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Vendas
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="listar-vendas.html">Listar Vendas Enviadas</a></li>
+                            <li><a class="dropdown-item" href="criar-venda.html">Criar Venda</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                </div>
+            </div>
+        </nav>
+    </div>
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col">
+                <h1>Criar Cliente</h1>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-4">
+                <form>
+                    <div class="mb-3">
+                        <label for="exampleInputEmail1" class="form-label">Primeiro Nome</label>
+                        <input type="text" class="form-control" id="firstName">
+                    </div>
+                    <div class="mb-3">
+                        <label for="exampleInputEmail1" class="form-label">Sobrenome</label>
+                        <input type="text" class="form-control" id="lastName">
+                    </div>
+                    <div class="mb-3">
+                        <label for="exampleInputEmail1" class="form-label">Documento</label>
+                        <input type="text" class="form-control" id="document">
+                    </div>
+                    <div class="mb-3">
+                        <label for="exampleInputEmail1" class="form-label">Natureza do Cadastro</label>
+                        <select class="form-control" name="customerType" id="customerType">
+                            <option value="person" selected>Pessoa Física</option>
+                            <option value="business">Pessoa Jurífica</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="exampleInputEmail1" class="form-label">Telefone</label>
+                        <input type="text" class="form-control" id="phone">
+                    </div>
+                    <div class="mb-3">
+                        <label for="exampleInputEmail1" class="form-label">Email</label>
+                        <input type="text" class="form-control" id="email">
+                    </div>
+                    <div class="mb-3">
+                        <label for="exampleInputEmail1" class="form-label">Data de Nascimento</label>
+                        <input type="date" class="form-control" id="birthDate">
+                    </div>
+                    <div class="mb-3">
+                        <label for="exampleInputEmail1" class="form-label">Vendedor (indicação)</label>
+                        <select class="form-control" name="salesmanId" id="salesmanId">
+                            <option value="" selected>Selecione um Vendedor</option>
+                        </select>
+                    </div>
+                    <button type="button" class="btn btn-primary" id="criarClienteBtn">Criar Cliente</button>
+                </form>
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-12">
+                <h4>Response: </h4>
+            </div>
+            <div class="col-12">
+                <pre id="response"></pre>
+            </div>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
+    <script>
+        $(document).ready(async function(){
+            loadSalesman();
+
+            $("#criarClienteBtn").click(function(event){
+
+                event.preventDefault();
+                const firstName = $("#firstName").val();
+                const lastName = $("#lastName").val();
+                const document = $("#document").val();
+                const customerType = $("#customerType").val();
+                const phone = $("#phone").val();
+                const email = $("#email").val();
+                const birthDate = $("#birthDate").val();
+                const salesmanId = $("#salesmanId").val();
+
+                $.ajax({
+                    method: "POST",
+                    url: "https://external-core-api-dev.herokuapp.com/external/customers/create",
+                    data: { firstName, lastName, document, customerType, phone, email, birthDate, salesmanId },
+                    beforeSend: function(request) {
+                        request.setRequestHeader("x-api-key", localStorage.getItem("x_api_key"));
+                        request.setRequestHeader("Authorization", `Bearer ${localStorage.getItem("access_token")}`);
+                    },
+                })
+                .fail(function(error) {
+                    $("#response").html('');
+                    $("#response").html(`Status Code: ${error.status} <br> Response text: ${error.responseText}`);
+                })
+                .done(function( response ) {
+                    $("#response").html('');
+                    $("#response").html(`${JSON.stringify(response)}`);
+                });
+            });
+        });
+
+        function loadSalesman(){
+            $.ajax({
+                method: "GET",
+                url: "https://external-core-api-dev.herokuapp.com/external/users/salesman/list",
+                beforeSend: function(request) {
+                    request.setRequestHeader("x-api-key", localStorage.getItem("x_api_key"));
+                    request.setRequestHeader("Authorization", `Bearer ${localStorage.getItem("access_token")}`);
+                },
+            })
+            .fail(function(error) {
+                $("#response").html('');
+                $("#response").html(`[salesman/list] Status Code: ${error.status} <br> Response text: ${error.responseText}`);
+            })
+            .done(function( response ) {
+                $("#response").html('');
+                $("#response").html(`[salesman/list]: ${JSON.stringify(response)}`);
+                for(key in response){
+                    $("#salesmanId").append(`<option value="${response[key].id}">${response[key].firstName} ${response[key].lastName}</option>`);
+                }
+            });
+        }
+    </script>
+    
+</body>
+</html>
